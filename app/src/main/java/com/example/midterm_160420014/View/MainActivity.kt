@@ -2,6 +2,8 @@ package com.example.midterm_160420014.View
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -13,8 +15,27 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        val navController = this.findNavController(R.id.hostFragment)
-//        return navController.navigateUp()
-//    }
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = this.findNavController(R.id.hostFragment)
+        val drawerLayout = this.findViewById<DrawerLayout>(R.id.drawerLayout)
+        when(navController.currentDestination?.label.toString()){
+            "Home"->{
+                if(drawerLayout.isOpen)drawerLayout.close()
+                else drawerLayout.open()
+                return super.onSupportNavigateUp()
+            }
+            "History"->{
+                if(drawerLayout.isOpen)drawerLayout.close()
+                else drawerLayout.open()
+                return super.onSupportNavigateUp()
+            }
+            "Profile"->{
+                if(drawerLayout.isOpen)drawerLayout.close()
+                else drawerLayout.open()
+                return super.onSupportNavigateUp()
+            }
+            else -> return NavigationUI.navigateUp(navController,drawerLayout)
+        }
+
+    }
 }

@@ -30,21 +30,13 @@ class MainFragment : Fragment() {
         view?.findViewById<BottomNavigationView>(R.id.bottomNav)?.setupWithNavController(navControler)
 
         drawerLayout = view.findViewById(R.id.drawerLayout)
-        navControler = (childFragmentManager.findFragmentById(R.id.hostFragment)
-                as NavHostFragment).navController
-
         val appBarConfig = AppBarConfiguration(
-            setOf(R.id.itemHome,R.id.itemProfile,R.id.itemHistory),
+            setOf(R.id.itemHome,R.id.itemProfile),
             drawerLayout
         )
         NavigationUI.setupActionBarWithNavController((requireActivity() as AppCompatActivity), navControler, appBarConfig)
         val navView = view.findViewById<NavigationView>(R.id.navView)
         NavigationUI.setupWithNavController(navView, navControler)
-
-//        requireActivity().onBackPressedDispatcher.addCallback{
-//            navControler.navigateUp()
-//            Log.d("Test1: ","TEsttttttttttttttttt")
-//        }
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +48,8 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        val rootView= inflater.inflate(R.layout.fragment_main, container, false)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        return rootView
     }
 }
