@@ -10,34 +10,33 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.midterm_160420014.R
+import com.example.midterm_160420014.ViewModel.ListMenuViewModel
 import com.example.midterm_160420014.ViewModel.ListRestoViewModel
 
-class HomeFragment : Fragment() {
-private lateinit var restoVM:ListRestoViewModel
-    private val restaurantListAdapter=RestaurantListAdapter(arrayListOf())
+class MenuFragment : Fragment() {
+    private lateinit var menuVM: ListMenuViewModel
+    private val menuListAdapter=MenuListAdapter(arrayListOf())
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        restoVM = ViewModelProvider(this).get(ListRestoViewModel::class.java)
-        restoVM.refreshData()
+        val id = MenuFragmentArgs.fromBundle(requireArguments()).id
+        menuVM = ViewModelProvider(this).get(ListMenuViewModel::class.java)
+        menuVM.refreshData(id)
 
         val recView = view.findViewById<RecyclerView>(R.id.recView)
-        recView.layoutManager=LinearLayoutManager(context)
-        recView.adapter=restaurantListAdapter
+        recView.layoutManager= LinearLayoutManager(context)
+        recView.adapter=menuListAdapter
         observe()
     }
     fun observe(){
-        restoVM.restoList.observe(viewLifecycleOwner, Observer {
-            restaurantListAdapter.updateRestoList(it)
+        menuVM.menuList.observe(viewLifecycleOwner, Observer {
+            menuListAdapter.updatemenuList(it)
         })
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_menu, container, false)
     }
-
 }

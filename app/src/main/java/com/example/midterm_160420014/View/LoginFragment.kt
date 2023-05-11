@@ -1,5 +1,7 @@
 package com.example.midterm_160420014.View
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -7,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ShareActionProvider
 import android.widget.Toast
 import androidx.navigation.Navigation
 import com.android.volley.Request
@@ -32,16 +35,22 @@ class LoginFragment : Fragment() {
                 Request.Method.GET,
                 "http://10.0.2.2:8080/ANMP/users.json",
                 { response ->
+                    Log.d("Response: ",response)
                     val sType = object: TypeToken<ArrayList<Users>>(){}.type
                     val result = Gson().fromJson<ArrayList<Users>>(response,sType)
-                    if(result.any{user->user.email==email && user.password==password}){
-                        val action = LoginFragmentDirections.actionLoginFragmentToMainFragment()
-                        Navigation.findNavController(it).navigate(action)
-                    }
-                    else{
-                        Toast.makeText(requireContext(),"User doesn't exists!",Toast.LENGTH_SHORT).show()
+                    result.forEach {data->
+                        if(data.email==email && data.password==password){
+                            val sharedPref = requireActivity().getSharedPreferences("UserInfo",Context.MODE_PRIVATE)
+                            val editor:SharedPreferences.Editor = sharedPref.edit()
+                            editor.putString("id",data.id)
+                            editor.apply()
+                            val action = LoginFragmentDirections.actionLoginFragmentToMainFragment()
+                            Navigation.findNavController(it).navigate(action)
+                            return@forEach
+                        }
                     }
                 },{ error -> Log.d("Error: ",error.toString())})
+            Log.d("Request: ",req.toString())
             Volley.newRequestQueue(requireContext()).add(req)
         }
     }

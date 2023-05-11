@@ -31,7 +31,7 @@ class MainFragment : Fragment() {
 
         drawerLayout = view.findViewById(R.id.drawerLayout)
         val appBarConfig = AppBarConfiguration(
-            setOf(R.id.itemHome,R.id.itemProfile),
+            setOf(R.id.itemHome,R.id.itemProfile,R.id.itemHistory),
             drawerLayout
         )
         NavigationUI.setupActionBarWithNavController((requireActivity() as AppCompatActivity), navControler, appBarConfig)

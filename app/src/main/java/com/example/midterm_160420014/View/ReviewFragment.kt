@@ -11,42 +11,45 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.midterm_160420014.Model.Users
 import com.example.midterm_160420014.R
-import com.example.midterm_160420014.ViewModel.ListHistoryViewModel
-import com.example.midterm_160420014.ViewModel.ListMenuViewModel
-import com.example.midterm_160420014.ViewModel.ListRestoViewModel
+import com.example.midterm_160420014.ViewModel.ListReviewViewModel
+import com.example.midterm_160420014.ViewModel.UserViewModel
 
-class HistoryFragment : Fragment() {
-    private lateinit var historyVM:ListHistoryViewModel
-    private lateinit var menuVM:ListMenuViewModel
-    private val historyAdapter=HistoryListAdapter(arrayListOf())
+class ReviewFragment : Fragment() {
+    private lateinit var reviewVM: ListReviewViewModel
+    private lateinit var userVM: UserViewModel
+    private val reviewAdapter = ReviewListAdapter(arrayListOf())
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sharedPref = requireActivity().getSharedPreferences("UserInfo", Context.MODE_PRIVATE)
-        historyVM = ViewModelProvider(this).get(ListHistoryViewModel::class.java)
-        menuVM = ViewModelProvider(this).get(ListMenuViewModel::class.java)
+        val id = ReviewFragmentArgs.fromBundle(requireArguments()).id
+
+        reviewVM = ViewModelProvider(this)[ListReviewViewModel::class.java]
+        userVM = ViewModelProvider(this)[UserViewModel::class.java]
         sharedPref.getString("id","")?.let {
-            menuVM.refreshAll()
-            historyVM.refreshData(it.toInt())
+            userVM.refresh(it)
+            reviewVM.refreshData(id, it)
         }
+
         val recView = view.findViewById<RecyclerView>(R.id.recView)
         recView.layoutManager= LinearLayoutManager(context)
-        recView.adapter=historyAdapter
+        recView.adapter=reviewAdapter
         observe()
     }
     fun observe(){
-        historyVM.historyList.observe(viewLifecycleOwner, Observer {
-            menuVM.menuList.observe(viewLifecycleOwner, Observer {menu->
-                historyAdapter.updatehistoryList(it,menu)
+        userVM.userData.observe(viewLifecycleOwner, Observer {user->
+            reviewVM.reviewList.observe(viewLifecycleOwner, Observer {
+                Log.d("Content: ",it.toString())
+                reviewAdapter.updatereviewList(it,user)
             })
         })
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_history, container, false)
+        return inflater.inflate(R.layout.fragment_review, container, false)
     }
 }
